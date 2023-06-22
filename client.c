@@ -113,6 +113,11 @@ static void *send_message(void *fun_arg)
 	{
 		memset(message, 0, sizeof(message));
 		fgets(message, sizeof(message), stdin);
+		if (!strcmp(message, "!exit\n"))
+		{
+			pthread_cancel(receive_thread);
+			return 0;
+		}
 		des_fd = open(DEVICE_NODE, O_RDWR);
 		if (des_fd == -1) {
 		    sent_byte = strlen(message);
@@ -190,8 +195,9 @@ int main()
 	printf("Set name success.\n");
     pthread_create(&receive_thread, NULL, receive_message, &server_fd);
     pthread_create(&sent_thread, NULL, send_message, &server_fd);
-    while (1)
-        sleep(1);
 
+    pthread_join(sent_thread, NULL);
+	pthread_join(receive_thread, NULL);
+    
     return 0;
 }

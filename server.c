@@ -122,6 +122,7 @@ out:
     show_service();
     close(*client_fd);
     free(client_fd);
+	pthread_exit(NULL);
 }
 
 int main()
@@ -169,6 +170,5 @@ int main()
         }
         pthread_create(&thread, NULL, socket_handler, pclient_fd);
     }
-
     return 0;
 }
